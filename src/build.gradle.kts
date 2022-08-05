@@ -1,19 +1,17 @@
 plugins {
     base
-    kotlin("jvm") version "1.3.41" apply false
+    kotlin("jvm") version "1.7.10" apply false
 }
 
 allprojects {
     group = "de.rub.mobsec"
 
     repositories {
-        jcenter()
+        mavenCentral()
     }
-}
 
-dependencies {
-    // Make the root project archives configuration depend on every subproject
-    subprojects.forEach {
-        archives(it)
+    tasks.withType<AbstractArchiveTask>().configureEach {
+        isPreserveFileTimestamps = false
+        isReproducibleFileOrder = true
     }
 }

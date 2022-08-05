@@ -147,7 +147,7 @@ object SunMeter : StrengthMeter() {
  * Minimal score value: `0.162` - Since the minimum length in segments is 3 and since non-repeated is weighted so low
  * it is 1/3. This leads to 0.81*(3/15)+0.04*1/3=263/1500
  *
- * Maximal score value: `0.99` - Since the the pattern with the highest score does not have a ratio of non-repeated
+ * Maximal score value: `0.99` - Since the pattern with the highest score does not have a ratio of non-repeated
  * segments of 1.
  *
  * Technically the score should range from `0` to `1` (inclusive), thus, we provide a function to compute the

@@ -4,18 +4,21 @@ plugins {
     kotlin("jvm")
 }
 
-version = "1.0.0"
+version = "1.0.1"
 
-val junitVersion = "5.5.0"
+val junitVersion = "5.9.0"
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     testImplementation(kotlin("test"))
-    testImplementation(kotlin("test-junit"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation(kotlin("test-junit5"))
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {

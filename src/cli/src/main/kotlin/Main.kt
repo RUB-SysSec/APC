@@ -6,7 +6,7 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintHelpMessage
 import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.core.context
-import com.github.ajalt.clikt.output.PlaintextHelpFormatter
+import com.github.ajalt.clikt.output.CliktHelpFormatter
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.arguments.transformAll
@@ -16,8 +16,6 @@ import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import java.text.DecimalFormat
-import kotlin.reflect.KType
-import kotlin.reflect.jvm.reflect
 import kotlin.reflect.typeOf
 
 private val DEFAULT_GRID = AndroidUnlockGrid[3]
@@ -46,7 +44,7 @@ internal fun CliktCommand.patterns() = option(
 
 internal fun CliktCommand.files() = option(
     "-f", "--file", help = "File with one pattern per line."
-).file(exists = true, readable = true).multiple()
+).file(mustExist = true, mustBeReadable = true).multiple()
 
 internal inline fun String.toPattern(config: PatternConfig) =
     AndroidUnlockPattern[config.grid, trim(), config.delimiter]
@@ -121,7 +119,6 @@ private val names: Map<List<String>, (AndroidUnlockPattern) -> Number> = mapOf(
 )
 
 
-@ExperimentalStdlibApi
 private val returnTypes: Map<(AndroidUnlockPattern) -> Number, Boolean> = mapOf(
     AndriotisMeter::computeScore to (AndriotisMeter::computeScore.returnType == typeOf<Int>()),
     AndriotisMeter::computeNormalizedScore to (AndriotisMeter::computeNormalizedScore.returnType == typeOf<Int>()),
@@ -162,15 +159,13 @@ private val indexToFun = names.values.toList()
 
 private const val SEPARATOR = "\t"
 
-private val df = DecimalFormat("0.0###############")
-
 private val df1 = DecimalFormat("0.0###############")
 private val df2 = DecimalFormat("0.################")
 
-@ExperimentalStdlibApi
 private inline fun Collection<(AndroidUnlockPattern) -> Number>.scoresString(pattern: AndroidUnlockPattern) =
     joinToString(SEPARATOR) {
-        if (returnTypes.getValue(it)) df2.format(it(pattern).toDouble()) else df1.format(it(pattern).toDouble())}
+        if (returnTypes.getValue(it)) df2.format(it(pattern).toDouble()) else df1.format(it(pattern).toDouble())
+    }
 
 internal class APC : CliktCommand(
     name = "apc",
@@ -194,15 +189,13 @@ internal class APC : CliktCommand(
             })
         registerOption(
             EagerOption(
-                setOf("--version"),
-                0,
-                "Show the version plus license and exit.",
-                false
+                names = arrayOf("--version"),
+                help = "Show the version plus license and exit.",
             ) {
                 throw PrintMessage(
                     """
 Android Pattern Classifier (apc) $VERSION -- $VERSION_DATE
-Copyright (c) 2019 Horst Goertz Institute for IT Security (Ruhr University Bochum)
+Copyright (c) 2022 Horst Goertz Institute for IT Security (Ruhr University Bochum)
 
 MIT License (MIT)
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -234,27 +227,27 @@ Written by Jan Rimkus.
     private val patterns by patterns()
     private val files by files()
     private val header by option("--header-on", help = "Print a header.").flag("--header-off", default = true)
-    private val features by argument(help = "Features to compute. Default is all features.").choice(names.keys.mapIndexed { index, args -> args.map { it to index } }.flatten().toMap())
+    private val features by argument(help = "Features to compute. Default is all features.").choice(names.keys.mapIndexed { index, args -> args.map { it to index } }
+        .flatten().toMap())
         .multiple().transformAll { list -> list.map { indexToFun[it] } }
 
-    
-    @ExperimentalStdlibApi
+
     private inline fun AndroidUnlockPattern.echoPatternWithFeatures(count: Int) {
         if (features.isNotEmpty())
             echo(
-                "${toString()}$SEPARATOR$count$SEPARATOR${if (isValid) "VALID" else "INVALID"}$SEPARATOR${features.scoresString(
-                    this
-                )}"
+                "${toString()}$SEPARATOR$count$SEPARATOR${if (isValid) "VALID" else "INVALID"}$SEPARATOR${
+                    features.scoresString(this)
+                }"
             )
         else
             echo(
-                "${toString()}$SEPARATOR$count$SEPARATOR${if (isValid) "VALID" else "INVALID"}$SEPARATOR${indexToFun.scoresString(
-                    this
-                )}"
+                "${toString()}$SEPARATOR$count$SEPARATOR${if (isValid) "VALID" else "INVALID"}$SEPARATOR${
+                    indexToFun.scoresString(this)
+                }"
             )
     }
 
-    
+
     @ExperimentalStdlibApi
     override fun run() {
         val config = PatternConfig(delimiter, grid = grid)
@@ -268,15 +261,17 @@ Written by Jan Rimkus.
         if (header) {
             if (features.isNotEmpty()) echo(
                 "pattern${SEPARATOR}count${SEPARATOR}validity$SEPARATOR${
-                features.joinToString(SEPARATOR) { feature ->
-                    names.entries.first { it.value == feature }.key.first()
-                }}"
+                    features.joinToString(SEPARATOR) { feature ->
+                        names.entries.first { it.value == feature }.key.first()
+                    }
+                }"
             )
             else echo(
                 "pattern${SEPARATOR}count${SEPARATOR}validity$SEPARATOR${
-                indexToFun.joinToString(SEPARATOR) { feature ->
-                    names.entries.first { it.value == feature }.key.first()
-                }}"
+                    indexToFun.joinToString(SEPARATOR) { feature ->
+                        names.entries.first { it.value == feature }.key.first()
+                    }
+                }"
             )
         }
 
@@ -286,11 +281,11 @@ Written by Jan Rimkus.
     }
 }
 
-private const val VERSION = "1.0.3"
-private const val VERSION_DATE = "2019-07-24"
+private const val VERSION = "1.0.4"
+private const val VERSION_DATE = "2022-08-05"
 
 fun main(args: Array<String>) = APC().context {
-    this.helpFormatter = PlaintextHelpFormatter(
+    this.helpFormatter = CliktHelpFormatter(
         usageTitle = """
         Android Pattern Classifier (apc) $VERSION -- $VERSION_DATE
 

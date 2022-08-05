@@ -31,7 +31,7 @@ internal data class DefaultAndroidUnlockPattern(
                 visited += segment.b
                 isNotValid
             }
-        }.count() == 0
+        }.isEmpty()
     }
 
     override val startNodeIndex by lazy { androidUnlockGrid[segments.first().a] }
@@ -42,7 +42,7 @@ internal data class DefaultAndroidUnlockPattern(
         val visited = mutableListOf<Segment>()
         val visitedBuffer = mutableListOf<Segment>()
 
-        segments.sumBy { segment ->
+        segments.sumOf { segment ->
             val count = visited.asSequence().filter(segment::isSunIntersecting).count()
             if (visitedBuffer.isNotEmpty())
                 visited += visitedBuffer.removeAt(INDEX_OF_FIRST)
@@ -55,7 +55,7 @@ internal data class DefaultAndroidUnlockPattern(
         val visited = mutableListOf<Segment>()
         val visitedBuffer = mutableListOf<Segment>()
 
-        segments.sumBy { segment ->
+        segments.sumOf { segment ->
             visited.filter(segment::isSongIntersecting).also {
                 if (visitedBuffer.isNotEmpty())
                     visited += visitedBuffer.removeAt(INDEX_OF_FIRST)
@@ -67,7 +67,7 @@ internal data class DefaultAndroidUnlockPattern(
     override val numberOfRevisitedNodes by lazy {
         val visited = mutableSetOf(segments.first().a)
 
-        segments.sumBy { segment ->
+        segments.sumOf { segment ->
             visited.filter(segment::isOverlapping).also { visited += segment.b }.count()
         }
     }
@@ -75,20 +75,20 @@ internal data class DefaultAndroidUnlockPattern(
     override val numberOfOverlappingSegments by lazy {
         val visited = mutableSetOf<Segment>()
 
-        segments.sumBy { segment ->
+        segments.sumOf { segment ->
             visited.filter(segment::isOverlapping).also { visited += segment }.count()
         }
     }
 
-    override val numberOfKnightMoves by lazy { segments.filter { it.isKnightMove }.count() }
+    override val numberOfKnightMoves by lazy { segments.count { it.isKnightMove } }
 
     override val numberOfDirectionChanges by lazy {
         segments.asSequence().zipWithNext().filter { it.first isTurn it.second }.count()
     }
 
-    override val sumOfEuclideanDistances by lazy { segments.sumByDouble { it.euclideanDistance } }
+    override val sumOfEuclideanDistances by lazy { segments.sumOf { it.euclideanDistance } }
 
-    override val sumOfMaximumNorms by lazy { segments.sumBy { it.maximumNorm } }
+    override val sumOfMaximumNorms by lazy { segments.sumOf { it.maximumNorm } }
 
     override val ratioOfNonRepeatedSegments by lazy {
         segments.map { it.direction.abs() }.toSet().count() / segments.size.toDouble()
