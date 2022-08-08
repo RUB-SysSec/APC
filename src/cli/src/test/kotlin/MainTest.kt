@@ -45,27 +45,27 @@ class PrintStreamTest {
     @CsvSource(
         value = [
             "0-1-2-4-6-7-8-3-5,VALID,-",
-            "012467835,VALID,",
+            "012467835,VALID,''",
             "4-0-8-1-7-2-6-5-3,VALID,-",
-            "408172653,VALID,",
+            "408172653,VALID,''",
             "0-1-2-4-6-7-8-3-5-9,INVALID,-",
-            "0124678359,INVALID,",
+            "0124678359,INVALID,''",
             "4-0-8-1-7-2-6-5-3-0,INVALID,-",
-            "4081726530,INVALID,",
+            "4081726530,INVALID,''",
             "0-0-0-0,INVALID,-",
-            "0000,INVALID,",
+            "0000,INVALID,''",
             "0-2-3-5,INVALID,-",
-            "0235,INVALID,"
+            "0235,INVALID,''",
         ]
     )
     fun `test verify sub-command with non-default delimiter`(
         patternString: String,
         isValid: String,
-        delimiter: String?
+        delimiter: String
     ) {
-        apc.parse(listOf("-d", delimiter ?: "", "-p", patternString))
+        apc.parse(listOf("-d", delimiter, "-p", patternString, "--header-off"))
         assertAll(
-            //  { assertEquals("$patternString1,$isValid", outContent.toString().trim()) },
+            { "$patternString\t1\t$isValid".let { assertEquals(it, outContent.toString().substring(0, it.length)) } },
             { assertEquals("", errContent.toString()) }
         )
     }

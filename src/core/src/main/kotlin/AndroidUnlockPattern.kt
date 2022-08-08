@@ -15,7 +15,7 @@ interface AndroidUnlockPattern {
     /**
      * Returns `true` only if this pattern is valid, `false` otherwise.
      *
-     * A pattern for a 3x3 (default size) [grid][AndroidUnlockGrid] is only valid if all of the
+     * A pattern for a 3x3 (default size) [grid][AndroidUnlockGrid] is only valid if all the
      * following statements are true:
      * * minimal length is 4 [nodes][Node] (inclusive)
      * * each node can only be included once in a pattern (it can be revisited)
@@ -60,10 +60,10 @@ interface AndroidUnlockPattern {
     val nodeLength: Int
 
     /**
-     * Returns the number of non consecutive intersecting [segments][Segment], as defined by Sun et al.
+     * Returns the number of non-consecutive intersecting [segments][Segment], as defined by Sun et al.
      *
-     * Sun counts all intersections, with no regards to where this intersections happen. We call this the intuitive way
-     * of counting intersections. Intersections are independent of a segments direction. The number of intersections is
+     * Sun counts all intersections, with no regards to where these intersections happen. We call this the intuitive way
+     * of counting intersections. Intersections are independent of a segments' direction. The number of intersections is
      * increased by one, if two segments intersect. The maximum number of intersection is 18.
      *
      * Some examples with two segments:
@@ -75,10 +75,10 @@ interface AndroidUnlockPattern {
     val numberOfSunIntersections: Int
 
     /**
-     * Returns the number of non consecutive intersecting [segments][Segment], as defined by Song et al.
+     * Returns the number of non-consecutive intersecting [segments][Segment], as defined by Song et al.
      *
-     * Song does NOT counts all intersections, they omit intersections that happen directly on the end of a line
-     * segment. Intersections are independent of a segments direction. The number of intersections is increased by one,
+     * Song does NOT count all intersections, they omit intersections that happen directly on the end of a line
+     * segment. Intersections are independent of a segments' direction. The number of intersections is increased by one,
      * if two segments intersect. The maximum number of intersection is 15.
      *
      * Some examples with two segments:
@@ -159,7 +159,7 @@ interface AndroidUnlockPattern {
     val sumOfMaximumNorms: Int
 
     /**
-     * Returns the ratio of non repeated [segments][Segment].
+     * Returns the ratio of non-repeated [segments][Segment].
      *
      * Since we are not exactly sure what this means and the author of the paper did not answer our questions we assume
      * that it means:
@@ -185,7 +185,7 @@ interface AndroidUnlockPattern {
     val ratioOfNonRepeatedSegments: Double
 
     /**
-     * Returns the ratio of non repeated [segments][Segment].
+     * Returns the ratio of non-repeated [segments][Segment].
      *
      * This is an alternate version for [ratioOfNonRepeatedSegments]. It uses the longest palindrome of segment
      * directions instead of unique segment directions:
@@ -195,12 +195,16 @@ interface AndroidUnlockPattern {
      * See [ratioOfNonRepeatedSegments] for the definition of segment directions.
      *
      * Some examples:
+     * ```
+     * | pattern       | segments | palindrome | ratio             |
+     * |---------------|----------|------------|-------------------|
+     * | 0.3.6.1.4.7.8 | 6        | 5          | (6-5)/6 = 1/6     |
+     * | 0.1.2.4.6.7.8 | 6        | 6          | (6-6)/6 = 0/6 = 0 |
+     * | 4.0.3.5       | 3        | 1          | (3-1)/3 = 2/3     |
+     * ```
      *
-     * * The pattern 0.3.6.1.4.7.8 has a longest palindrome of 5 and 6 segments = (6-5)/6 = 1/6
-     * * The pattern 0.1.2.4.6.7.8 has a longest palindrome of 6 and 6 segments = (6-6)/6 = 0/6 = 0
-     * * The pattern 4.0.3.5 has a longest palindrome of 1 and 3 segments = (3-1)/3 = 2/3
-     *
-     * As one can see the problem here is that the minimal longest palindrome is 1, thus never allowing a score of 1.
+     * As one can see the problem here is that the minimal longest palindrome is 1, thus never allowing the highest
+     * score of 1.
      */
     val ratioOfNonRepeatedSegmentsWithPalindrome: Double
 

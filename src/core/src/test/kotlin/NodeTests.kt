@@ -53,8 +53,8 @@ internal class NodeTests {
             }
         } + DynamicTest.dynamicTest("expected 0") {
             Assertions.assertEquals(0.0, Node[0, 0].euclideanDistance)
-        } + DynamicTest.dynamicTest("expected 10.770329614269008") {
-            Assertions.assertEquals(10.770329614269008, Node[-10, 4].euclideanDistance)
+        } + DynamicTest.dynamicTest("expected 10.770329614269008 (last digit 7, because of double-rounding") {
+            Assertions.assertEquals(10.770329614269007, Node[-10, 4].euclideanDistance)
         }).iterator()
 
     @TestFactory

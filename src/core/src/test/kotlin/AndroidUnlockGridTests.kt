@@ -23,7 +23,7 @@ internal class AndroidUnlockGridTests {
     fun `test if map#get(map#get(index)) == index`() =
         positiveTestRange.flatMap { cols ->
             positiveTestRange.flatMap { rows ->
-                (0..(cols * rows - 1)).asSequence().map { index ->
+                (0 until cols * rows).asSequence().map { index ->
                     val grid = AndroidUnlockGrid[cols, rows]
 
                     dynamicTest("$cols,$rows expected $index") {

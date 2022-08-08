@@ -9,7 +9,7 @@ APC: Android (Unlock) Pattern Classifier
 
 ### tl;dr
 APC is a classifier for Android unlock patterns written in [Kotlin](https://developer.android.com/kotlin).
-It calculates scores derived from visual properties that are used by various Android unlock pattern strength meters to estimate the strength, also know as guessability, of a given pattern.
+It calculates scores derived from visual properties that are used by various Android unlock pattern strength meters to estimate the strength, also known as guessability, of a given pattern.
 
 ### Paper: On the In-Accuracy and Influence of Android Pattern Strength Meters
 If you are interested in the details on how accurate, current Android unlock pattern strength meter proposals are and how a Markov model-based pattern strength meter improves on their accuracy, please refer to our paper: [On the In-Accuracy and Influence of Android Pattern Strength Meters](https://www.mobsec.ruhr-uni-bochum.de/forschung/veroeffentlichungen/accuracy-android-pattern-strength-meters/).
