@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.5 - 2025-09-07
+### Fixed
+- Spelling and Dependencies
+- Code cleanup
+- More aggressive minimizing of apc.jar with proguard
+
 ## [1.0.4] - 2022-08-05
 ### Fixed
 - Spelling and Dependencies
