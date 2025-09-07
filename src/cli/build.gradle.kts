@@ -1,24 +1,17 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    application
     kotlin("jvm")
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.gradleup.shadow")
 }
 
-application {
-    mainClass.set("de.rub.mobsec.MainKt")
-}
+version = "1.0.5"
 
-version = "1.0.4"
-
-val junitVersion = "5.9.0"
+val junitVersion: String by project
+val cliktVersion: String by project
 
 dependencies {
     implementation(project(":core"))
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("com.github.ajalt:clikt:2.8.0")
+    implementation(kotlin("stdlib"))
+    implementation("com.github.ajalt.clikt:clikt-core:$cliktVersion")
 
     api(kotlin("reflect"))
     
@@ -32,14 +25,32 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-    kotlinOptions.freeCompilerArgs = listOf("-progressive")
+kotlin {
+    jvmToolchain(17)
+    compilerOptions.progressiveMode.set(true)
 }
 
-tasks.withType<ShadowJar> {
-    minimize()
-    archiveBaseName.set("apc")
+// disables the normal jar task
+tasks.jar {
+    enabled = false
+}
+
+// and enables shadowJar task
+artifacts.archives(tasks.shadowJar)
+
+tasks.shadowJar {
+    exclude("**/*.pro")
+    manifest {
+        attributes["Main-Class"] = "de.rub.mobsec.MainKt"
+    }
+    archiveBaseName.set("apc-shadow")
     archiveClassifier.set("")
     archiveVersion.set("")
+    finalizedBy("proguard")
+}
+
+tasks.register<proguard.gradle.ProGuardTask>("proguard") {
+    dependsOn(tasks.shadowJar)
+    configuration("proguard-rules.pro")
+    outputs.upToDateWhen { false }
 }

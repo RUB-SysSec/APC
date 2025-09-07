@@ -1,6 +1,15 @@
 plugins {
     base
-    kotlin("jvm") version "1.7.10" apply false
+    kotlin("jvm") apply false
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.guardsquare:proguard-gradle:7.7.0")
+    }
 }
 
 allprojects {
